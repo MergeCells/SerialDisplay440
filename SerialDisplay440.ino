@@ -41,9 +41,9 @@
 LiquidCrystal lcd1(11, 10, 9, 8, 7, 6, 5, 4, 3, 2);
 LiquidCrystal lcd2(11, 12, 9, 8, 7, 6, 5, 4, 3, 2);
 
-// mode=0 : 40char,4row  mode=4 : 20char,8row
-const byte mode = 4;
-byte line;
+// pushMode=0 : 40char,4row  pushMode=1 : 20char,8row
+const byte pushMode = 1;
+byte lcdLine;
 
 char blank40[] = "                                        ";
 char blank20[] = "                    ";
@@ -55,161 +55,177 @@ void setup() {
   lcd2.print(" or 8 data lines. If the former, omit the pin numbers for d0 to d3 and leave th#");
   Serial.begin(9600);
 
-  line = mode;
+  lcdLine = pushMode * 4;
 }
 
 void loop() {
   if (Serial.available()) {
-    switch (line) {
-      case 0:
-        lcd2.noBlink();
-        lcd1.setCursor(0, 0);
-        lcd1.print(blank40);
-        lcd1.setCursor(0, 0);
-        for (int i = 0; i < 40 && Serial.available() > 0; i++) {
-          lcd1.write(Serial.read());
-          delay(1);
-        }
-        line++;
-        lcd1.blink();
-        break;
+    sendLCD440();
+  }
+}
 
-      case 1:
-        lcd1.setCursor(0, 1);
-        lcd1.print(blank40);
-        lcd1.setCursor(0, 1);
-        for (int i = 0; i < 40 && Serial.available() > 0; i++) {
-          lcd1.write(Serial.read());
-          delay(1);
-        }
-        line++;
-        break;
+void sendLCD440() {
+  switch (lcdLine) {
+    case 0:
+      lcd2.noBlink();
+      lcd1.setCursor(0, 0);
+      lcd1.print(blank40);
+      lcd1.setCursor(0, 0);
+      for (int i = 0; i < 39 && Serial.available(); i++) {
+        lcd1.write(Serial.read());
+        delay(1);
+      }
+      if (Serial.available()) lcd1.write(0xA3);
+      lcdLine++;
+      lcd1.blink();
+      break;
 
-      case 2:
-        lcd1.noBlink();
-        lcd2.setCursor(0, 0);
-        lcd2.print(blank40);
-        lcd2.setCursor(0, 0);
-        for (int i = 0; i < 40 && Serial.available() > 0; i++) {
-          lcd2.write(Serial.read());
-          delay(1);
-        }
-        line++;
-        lcd2.blink();
-        break;
+    case 1:
+      lcd1.setCursor(0, 1);
+      lcd1.print(blank40);
+      lcd1.setCursor(0, 1);
+      for (int i = 0; i < 39 && Serial.available(); i++) {
+        lcd1.write(Serial.read());
+        delay(1);
+      }
+      if (Serial.available()) lcd1.write(0xA3);
+      lcdLine++;
+      break;
 
-      case 3:
-        lcd2.setCursor(0, 1);
-        lcd2.print(blank40);
-        lcd2.setCursor(0, 1);
-        for (int i = 0; i < 40 && Serial.available() > 0; i++) {
-          lcd2.write(Serial.read());
-          delay(1);
-        }
-        line = 0;
-        break;
+    case 2:
+      lcd1.noBlink();
+      lcd2.setCursor(0, 0);
+      lcd2.print(blank40);
+      lcd2.setCursor(0, 0);
+      for (int i = 0; i < 39 && Serial.available(); i++) {
+        lcd2.write(Serial.read());
+        delay(1);
+      }
+      if (Serial.available()) lcd2.write(0xA3);
+      lcdLine++;
+      lcd2.blink();
+      break;
 
-      case 4:
-        lcd2.noBlink();
-        lcd1.setCursor(0, 0);
-        lcd1.print(blank20);
-        lcd1.setCursor(0, 0);
-        for (int i = 0; i < 20 && Serial.available() > 0; i++) {
-          lcd1.write(Serial.read());
-          delay(1);
-        }
-        line++;
-        lcd1.blink();
-        break;
+    case 3:
+      lcd2.setCursor(0, 1);
+      lcd2.print(blank40);
+      lcd2.setCursor(0, 1);
+      for (int i = 0; i < 39 && Serial.available(); i++) {
+        lcd2.write(Serial.read());
+        delay(1);
+      }
+      if (Serial.available()) lcd2.write(0xA3);
+      lcdLine = 0;
+      break;
 
-      case 5:
-        lcd1.setCursor(0, 1);
-        lcd1.print(blank20);
-        lcd1.setCursor(0, 1);
-        for (int i = 0; i < 20 && Serial.available() > 0; i++) {
-          lcd1.write(Serial.read());
-          delay(1);
-        }
-        line++;
-        break;
+    case 4:
+      lcd2.noBlink();
+      lcd1.setCursor(0, 0);
+      lcd1.print(blank20);
+      lcd1.setCursor(0, 0);
+      for (int i = 0; i < 19 && Serial.available(); i++) {
+        lcd1.write(Serial.read());
+        delay(1);
+      }
+      if (Serial.available()) lcd1.write(0xA3);
+      lcdLine++;
+      lcd1.blink();
+      break;
 
-      case 6:
-        lcd1.noBlink();
-        lcd2.setCursor(0, 0);
-        lcd2.print(blank20);
-        lcd2.setCursor(0, 0);
-        for (int i = 0; i < 20 && Serial.available() > 0; i++) {
-          lcd2.write(Serial.read());
-          delay(1);
-        }
-        line++;
-        lcd2.blink();
-        break;
+    case 5:
+      lcd1.setCursor(0, 1);
+      lcd1.print(blank20);
+      lcd1.setCursor(0, 1);
+      for (int i = 0; i < 19 && Serial.available(); i++) {
+        lcd1.write(Serial.read());
+        delay(1);
+      }
+      if (Serial.available()) lcd1.write(0xA3);
+      lcdLine++;
+      break;
 
-      case 7:
-        lcd2.setCursor(0, 1);
-        lcd2.print(blank20);
-        lcd2.setCursor(0, 1);
-        for (int i = 0; i < 20 && Serial.available() > 0; i++) {
-          lcd2.write(Serial.read());
-          delay(1);
-        }
-        line++;
-        break;
+    case 6:
+      lcd1.noBlink();
+      lcd2.setCursor(0, 0);
+      lcd2.print(blank20);
+      lcd2.setCursor(0, 0);
+      for (int i = 0; i < 19 && Serial.available(); i++) {
+        lcd2.write(Serial.read());
+        delay(1);
+      }
+      if (Serial.available()) lcd2.write(0xA3);
+      lcdLine++;
+      lcd2.blink();
+      break;
 
-      case 8:
-        lcd2.noBlink();
-        lcd1.setCursor(20, 0);
-        lcd1.print(blank20);
-        lcd1.setCursor(20, 0);
-        for (int i = 0; i < 20 && Serial.available() > 0; i++) {
-          lcd1.write(Serial.read());
-          delay(1);
-        }
-        line++;
-        lcd1.blink();
-        break;
+    case 7:
+      lcd2.setCursor(0, 1);
+      lcd2.print(blank20);
+      lcd2.setCursor(0, 1);
+      for (int i = 0; i < 19 && Serial.available(); i++) {
+        lcd2.write(Serial.read());
+        delay(1);
+      }
+      if (Serial.available()) lcd2.write(0xA3);
+      lcdLine++;
+      break;
 
-      case 9:
-        lcd1.setCursor(20, 1);
-        lcd1.print(blank20);
-        lcd1.setCursor(20, 1);
-        for (int i = 0; i < 20 && Serial.available() > 0; i++) {
-          lcd1.write(Serial.read());
-          delay(1);
-        }
-        line++;
-        break;
+    case 8:
+      lcd2.noBlink();
+      lcd1.setCursor(20, 0);
+      lcd1.print(blank20);
+      lcd1.setCursor(20, 0);
+      for (int i = 0; i < 19 && Serial.available(); i++) {
+        lcd1.write(Serial.read());
+        delay(1);
+      }
+      if (Serial.available()) lcd1.write(0xA3);
+      lcdLine++;
+      lcd1.blink();
+      break;
 
-      case 10:
-        lcd1.noBlink();
-        lcd2.setCursor(20, 0);
-        lcd2.print(blank20);
-        lcd2.setCursor(20, 0);
-        for (int i = 0; i < 20 && Serial.available() > 0; i++) {
-          lcd2.write(Serial.read());
-          delay(1);
-        }
-        line++;
-        lcd2.blink();
-        break;
+    case 9:
+      lcd1.setCursor(20, 1);
+      lcd1.print(blank20);
+      lcd1.setCursor(20, 1);
+      for (int i = 0; i < 19 && Serial.available(); i++) {
+        lcd1.write(Serial.read());
+        delay(1);
+      }
+      if (Serial.available()) lcd1.write(0xA3);
+      lcdLine++;
+      break;
 
-      case 11:
-        lcd2.setCursor(20, 1);
-        lcd2.print(blank20);
-        lcd2.setCursor(20, 1);
-        for (int i = 0; i < 20 && Serial.available() > 0; i++) {
-          lcd2.write(Serial.read());
-          delay(1);
-        }
-        line = 4;
-        break;
+    case 10:
+      lcd1.noBlink();
+      lcd2.setCursor(20, 0);
+      lcd2.print(blank20);
+      lcd2.setCursor(20, 0);
+      for (int i = 0; i < 19 && Serial.available(); i++) {
+        lcd2.write(Serial.read());
+        delay(1);
+      }
+      if (Serial.available()) lcd2.write(0xA3);
+      lcdLine++;
+      lcd2.blink();
+      break;
 
-      default:
-        line = mode;
-        lcd1.noBlink();
-        lcd2.noBlink();
-        break;
-    }
+    case 11:
+      lcd2.setCursor(20, 1);
+      lcd2.print(blank20);
+      lcd2.setCursor(20, 1);
+      for (int i = 0; i < 19 && Serial.available(); i++) {
+        lcd2.write(Serial.read());
+        delay(1);
+      }
+      if (Serial.available()) lcd2.write(0xA3);
+      lcdLine = 4;
+      break;
+
+    default:
+      lcdLine = pushMode * 4;
+      lcd1.noBlink();
+      lcd2.noBlink();
+      break;
   }
 }
