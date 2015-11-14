@@ -49,13 +49,24 @@ char blank40[] = "                                        ";
 char blank20[] = "                    ";
 
 void setup() {
+  lcdLine = pushMode * 4;
   lcd1.begin(40, 2);
   lcd2.begin(40, 2);
-  lcd1.print("Creates a variable of type LiquidCrystal. The display can be controlled using 4#");
-  lcd2.print(" or 8 data lines. If the former, omit the pin numbers for d0 to d3 and leave th#");
+  
+  lcd1.setCursor(0, 0);
+  lcd1.print("This LCD can show 40characters, 4lines.");
+  lcd1.setCursor(0, 1);
+  lcd1.print("When I receive any serial data, will sh");
+  lcd2.setCursor(0, 0);
+  lcd2.print("ow those here. ");
   Serial.begin(9600);
 
-  lcdLine = pushMode * 4;
+  while(!Serial.available()){
+    lcd2.setCursor(30, 1);
+    lcd2.print(millis());
+  }
+  lcd1.clear();
+  lcd2.clear();
 }
 
 void loop() {
