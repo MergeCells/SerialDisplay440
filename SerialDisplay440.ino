@@ -37,7 +37,9 @@
 
 #include <LiquidCrystal.h>
 
-// RS to D11, R/W to GND , E1 to D10, E2 to D12, DB7-DB0 to D9-D2
+// DB7-DB0 to D2-D9, E1 to D10, R/W to GND, RS to D11
+// VEE to GND, VSS to GND, VCC to 5V, E2 to D12
+// NC is NC, LED+A to 3V3, LED-K to GND
 LiquidCrystal lcd1(11, 10, 9, 8, 7, 6, 5, 4, 3, 2);
 LiquidCrystal lcd2(11, 12, 9, 8, 7, 6, 5, 4, 3, 2);
 
